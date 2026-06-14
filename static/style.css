@@ -1,3 +1,71 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  background:#070712;
+  color:white;
+  overflow:hidden;
+}
+
+/* =========================
+   START SCREEN
+========================= */
+
+#startScreen{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:radial-gradient(circle,#1a1a2f,#000);
+  z-index:999;
+}
+
+.box{
+  text-align:center;
+  padding:20px;
+  animation:fadeIn 1s ease;
+}
+
+h1{
+  font-size:clamp(22px,5vw,42px);
+  color:#ff4d6d;
+  text-shadow:0 0 10px rgba(255,77,109,0.5);
+  margin:10px 0;
+}
+
+button{
+  margin-top:15px;
+  padding:12px 28px;
+  border:none;
+  border-radius:14px;
+  background:#ff4d6d;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.08);
+  background:#ff2e55;
+}
+
+.love{
+  font-size:20px;
+  margin:5px 0;
+  animation:float 2s infinite ease-in-out;
+}
+
+/* =========================
+   STORY CONTAINER
+========================= */
+
 #container{
   position:relative;
   width:100%;
@@ -8,27 +76,32 @@
   align-items:center;
 }
 
+/* =========================
+   STORY CARD
+========================= */
+
 .card{
   position:absolute;
 
-  width:min(90vw,750px);
+  width:min(92vw,800px);
 
   display:flex;
   flex-direction:column;
   align-items:center;
   text-align:center;
 
-  padding:20px;
+  padding:22px;
 
-  border-radius:20px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(12px);
 
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(10px);
+  border-radius:22px;
 
   opacity:0;
-  transform:translateY(20px);
+  transform:translateY(30px);
 
   transition:0.8s ease;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
 .card.active{
@@ -36,16 +109,99 @@
   transform:translateY(0);
 }
 
-.text{
-  margin-top:10px;
-  line-height:1.8;
-  font-size:clamp(14px,2.5vw,18px);
+h2{
+  font-size:clamp(20px,4vw,32px);
+  margin-bottom:10px;
+  color:#fff;
 }
+
+.text{
+  margin-top:12px;
+  font-size:clamp(14px,2.5vw,18px);
+  line-height:1.8;
+  white-space:pre-line;
+  color:#eaeaea;
+}
+
+/* =========================
+   IMAGE
+========================= */
 
 img{
   width:100%;
   max-height:55vh;
   object-fit:cover;
-  border-radius:15px;
-  margin-top:10px;
+  border-radius:18px;
+  margin-top:12px;
+
+  opacity:1;
+  transition:0.6s ease;
+}
+
+/* =========================
+   HEART BACKGROUND
+========================= */
+
+#bg{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:0;
+  pointer-events:none;
+}
+
+.heart{
+  position:absolute;
+  color:#ff4d6d;
+  font-size:16px;
+  animation:floatUp 6s linear infinite;
+  opacity:0.8;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes floatUp{
+  0%{
+    transform:translateY(100vh);
+    opacity:0;
+  }
+  50%{
+    opacity:1;
+  }
+  100%{
+    transform:translateY(-10vh);
+    opacity:0;
+  }
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:scale(0.95);}
+  to{opacity:1; transform:scale(1);}
+}
+
+/* =========================
+   RESPONSIVE FIX
+========================= */
+
+@media (max-width:480px){
+
+  button{
+    font-size:14px;
+    padding:10px 20px;
+  }
+
+  .card{
+    padding:16px;
+  }
+
+  .text{
+    font-size:14px;
+  }
 }
