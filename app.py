@@ -17,16 +17,22 @@ def read_txt(name):
 def home():
     data = [
         {
-            "img": "history1.png",
-            "title": "Awal Bertemu Cheslea",
+            "title": "History 1",
+            "img": "history1.jpg",
             "text": read_txt("history1.txt")
         },
         {
+            "title": "History 2",
             "img": "history2.jpg",
-            "title": "Waktu Bersama",
             "text": read_txt("history2.txt")
+        },
+        {
+            "title": "History 3",
+            "img": "history3.jpg",
+            "text": read_txt("history3.txt")
         }
     ]
+
     return render_template("index.html", data=data)
 
 if __name__ == "__main__":
