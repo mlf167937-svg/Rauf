@@ -1,77 +1,145 @@
-const btn = document.getElementById("klickBtn");
-const startScreen = document.getElementById("startScreen");
-const bgm = document.getElementById("bgm");
+let DATA = window.DATA || [];
+
+let index = 0;
+let cards = [];
+
 const container = document.getElementById("container");
 
-function delay(ms){
-  return new Promise(r=>setTimeout(r,ms));
+window.onload = function () {
+
+  const btn = document.getElementById("klickBtn");
+  const startScreen = document.getElementById("startScreen");
+  const bgm = document.getElementById("bgm");
+
+  console.log("BTN CHECK:", btn);
+
+  if (!btn) {
+    console.error("BUTTON NOT FOUND - cek id='klickBtn'");
+    return;
+  }
+
+  btn.addEventListener("click", async () => {
+
+    console.log("START CLICK OK");
+
+    startScreen.style.display = "none";
+
+    // 🎵 MUSIC SAFE PLAY
+    if (bgm) {
+      bgm.volume = 0.5;
+      bgm.play().catch(err => {
+        console.log("Music blocked by browser:", err);
+      });
+    }
+
+    startStory();
+  });
+};
+
+/* =========================
+   STORY ENGINE
+========================= */
+
+function delay(ms) {
+  return new Promise(r => setTimeout(r, ms));
 }
 
-/* typing effect */
-function typeText(el,text,speed=20){
-  return new Promise(resolve=>{
-    let i=0;
-    el.innerHTML="";
+function typeText(el, text, speed = 20) {
+  return new Promise(resolve => {
 
-    const interval=setInterval(()=>{
-      el.innerHTML+=text[i];
+    if (!text) {
+      resolve();
+      return;
+    }
+
+    let i = 0;
+    el.innerHTML = "";
+
+    const interval = setInterval(() => {
+      el.innerHTML += text[i];
       i++;
-      if(i>=text.length){
+
+      if (i >= text.length) {
         clearInterval(interval);
         resolve();
       }
-    },speed);
+    }, speed);
   });
 }
 
-/* STORY DATA (contoh) */
-const DATA = [
-  { title:"History 1", img:"", text:"Ini adalah awal cerita kita..." },
-  { title:"History 2", img:"history2.jpg", text:"Kita mulai lebih dekat..." },
-  { title:"History 3", img:"history3.jpg", text:"Dan semua jadi kenangan..." }
-];
+/* SHOW SLIDE */
+async function showSlide(i) {
 
-/* STORY RUN */
-async function runStory(){
+  if (i < 0 || i >= cards.length) return;
 
-  for(let item of DATA){
+  cards.forEach(c => c.classList.remove("active"));
 
-    const card=document.createElement("div");
-    card.style.padding="20px";
+  const card = cards[i];
+  card.classList.add("active");
 
-    const title=document.createElement("h2");
-    title.innerText=item.title;
-    card.appendChild(title);
+  const textEl = card.querySelector(".text");
+  const text = card.dataset.text;
 
-    if(item.img){
-      const img=document.createElement("img");
-      img.src="static/"+item.img;
-      img.style.width="100%";
-      img.style.borderRadius="15px";
-      card.appendChild(img);
-    }
+  if (text && !card.dataset.done) {
+    card.dataset.done = "1";
+    await typeText(textEl, text);
+  }
 
-    const text=document.createElement("div");
-    card.appendChild(text);
+  index = i;
+}
 
-    container.appendChild(card);
+/* AUTO PLAY */
+async function autoPlay() {
 
-    await typeText(text,item.text);
-    await delay(3000);
+  for (let i = 0; i < cards.length; i++) {
+    await showSlide(i);
+    await delay(3500);
   }
 }
 
-/* START BUTTON */
-btn.addEventListener("click",async()=>{
+/* BUILD STORY */
+function buildStory() {
 
-  startScreen.style.display="none";
-
-  try{
-    bgm.volume=0.5;
-    await bgm.play();
-  }catch(e){
-    console.log("music blocked");
+  if (!DATA || DATA.length === 0) {
+    console.error("DATA EMPTY");
+    return;
   }
 
-  runStory();
-});
+  DATA.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.dataset.text = item.text || "";
+
+    const title = document.createElement("h2");
+    title.innerText = item.title || "";
+    card.appendChild(title);
+
+    if (item.img) {
+      const img = document.createElement("img");
+      img.src = "/static/" + item.img;
+      img.onerror = () => {
+        img.style.display = "none";
+      };
+      card.appendChild(img);
+    }
+
+    const text = document.createElement("div");
+    text.className = "text";
+    card.appendChild(text);
+
+    container.appendChild(card);
+    cards.push(card);
+  });
+}
+
+/* START */
+async function startStory() {
+
+  buildStory();
+
+  await showSlide(0);
+
+  autoPlay();
+}
