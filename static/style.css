@@ -89,3 +89,19 @@ h2{
   line-height:1.8;
   white-space:pre-line;
 }
+
+button{
+  padding:10px 15px;
+  border:none;
+  border-radius:10px;
+  background:#ff4d6d;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.1);
+  background:#ff2e55;
+}
