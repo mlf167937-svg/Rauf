@@ -8,6 +8,11 @@
 
 <body>
 
+<!-- 🎵 MUSIC -->
+<audio id="bgm" loop>
+  <source src="{{ url_for('static', filename='music.mp3') }}" type="audio/mpeg">
+</audio>
+
 <div id="container"></div>
 
 <script>
@@ -15,5 +20,6 @@
 </script>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </body>
 </html>
