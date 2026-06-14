@@ -2,34 +2,46 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+
+  <!-- 📱 RESPONSIVE FIX (WAJIB) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Romantic Story</title>
+  <title>Our Quiet Story</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
+<!-- 🎵 MUSIC -->
 <audio id="bgm" loop>
   <source src="{{ url_for('static', filename='music.mp3') }}" type="audio/mpeg">
 </audio>
 
+<!-- 💖 START SCREEN -->
 <div id="startScreen">
   <div class="box">
-    <div class="love">❤️ 💖 ❤️</div>
+
+    <div style="font-size:22px;">❤️ 💖 💕 💖 ❤️</div>
+
     <h1>You Are So Pretty</h1>
+
     <button id="klickBtn">Klick Aku</button>
-    <div class="love">💖 💕 💖</div>
+
+    <div style="font-size:22px;">💕 ❤️ 💖 ❤️ 💕</div>
+
   </div>
 </div>
 
+<!-- 📖 STORY CONTAINER -->
 <div id="container"></div>
 
+<!-- 📦 DATA DARI PYTHON -->
 <script>
   const DATA = {{ data | tojson }};
 </script>
 
+<!-- ⚙️ JS -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
