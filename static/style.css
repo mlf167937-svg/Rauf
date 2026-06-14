@@ -6,7 +6,7 @@
 }
 
 body{
-  background:#0b0b14;
+  background:#070712;
   color:white;
   overflow:hidden;
 }
@@ -24,45 +24,75 @@ body{
 
 .box{
   text-align:center;
-  padding:20px;
 }
 
 h1{
-  font-size:clamp(22px,5vw,40px);
-  margin:15px 0;
   color:#ff4d6d;
-  text-shadow:0 0 10px rgba(255,77,109,0.6);
+  font-size:clamp(22px,5vw,40px);
 }
 
 button{
+  margin-top:15px;
   padding:12px 25px;
   border:none;
   border-radius:12px;
   background:#ff4d6d;
   color:white;
-  font-size:16px;
   cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover{
-  transform:scale(1.1);
-  background:#ff2e55;
-}
-
-.love{
-  font-size:22px;
-  animation:float 2s infinite ease-in-out;
-}
-
-@keyframes float{
-  0%{transform:translateY(0);}
-  50%{transform:translateY(-8px);}
-  100%{transform:translateY(0);}
 }
 
 /* STORY */
 #container{
+  position:relative;
   width:100%;
   height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card{
+  position:absolute;
+  width:min(90vw,800px);
+  padding:20px;
+  background:rgba(255,255,255,0.05);
+  border-radius:20px;
+  backdrop-filter:blur(10px);
+
+  opacity:0;
+  transform:translateX(50px);
+  transition:0.8s;
+}
+
+.card.active{
+  opacity:1;
+  transform:translateX(0);
+}
+
+img{
+  width:100%;
+  border-radius:15px;
+  margin-top:10px;
+}
+
+/* 💖 floating hearts background */
+#bg{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:0;
+}
+
+.heart{
+  position:absolute;
+  color:#ff4d6d;
+  animation:floatUp 6s linear infinite;
+  font-size:18px;
+  opacity:0.7;
+}
+
+@keyframes floatUp{
+  0%{transform:translateY(100vh);opacity:0;}
+  50%{opacity:1;}
+  100%{transform:translateY(-10vh);opacity:0;}
 }
