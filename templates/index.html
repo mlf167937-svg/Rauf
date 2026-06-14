@@ -2,11 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-
-  <!-- 📱 RESPONSIVE FIX (WAJIB) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Our Quiet Story</title>
+  <title>Our Story</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -18,30 +15,26 @@
   <source src="{{ url_for('static', filename='music.mp3') }}" type="audio/mpeg">
 </audio>
 
-<!-- 💖 START SCREEN -->
+<!-- 💖 START -->
 <div id="startScreen">
   <div class="box">
-
-    <div style="font-size:22px;">❤️ 💖 💕 💖 ❤️</div>
-
+    <div class="love">💖 ❤️ 💖 ❤️</div>
     <h1>You Are So Pretty</h1>
-
     <button id="klickBtn">Klick Aku</button>
-
-    <div style="font-size:22px;">💕 ❤️ 💖 ❤️ 💕</div>
-
+    <div class="love">❤️ 💖 ❤️ 💖</div>
   </div>
 </div>
 
-<!-- 📖 STORY CONTAINER -->
+<!-- 🌸 EFFECT BACKGROUND -->
+<div id="bg"></div>
+
+<!-- STORY -->
 <div id="container"></div>
 
-<!-- 📦 DATA DARI PYTHON -->
 <script>
   const DATA = {{ data | tojson }};
 </script>
 
-<!-- ⚙️ JS -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
