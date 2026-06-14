@@ -3,33 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Cheslea Story</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Romantic Story</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <!-- 🎵 MUSIC -->
 <audio id="bgm" loop>
-  <source src="{{ url_for('static', filename='music.mp3') }}" type="audio/mpeg">
+  <source src="static/music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- 🚀 START SCREEN (FIX AUTOPLAY) -->
+<!-- 💖 START SCREEN -->
 <div id="startScreen">
   <div class="box">
-    <h1> 🤍You Are My World🤍 </h1>
-    <button id="startBtn">Mulai Story</button>
+
+    <div class="love">❤️ 💕 ❤️</div>
+
+    <h1>You Are So Pretty</h1>
+
+    <button id="klickBtn">Klick Aku</button>
+
+    <div class="love">💖 💗 💖</div>
+
   </div>
 </div>
 
 <!-- STORY -->
 <div id="container"></div>
 
-<script>
-  const DATA = {{ data | tojson }};
-</script>
+<script src="script.js"></script>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
