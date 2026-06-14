@@ -1,41 +1,63 @@
-// 🌸 FLOW CONTROL CINEMATIC STORY
+const container = document.getElementById("container");
 
-const intro = document.getElementById("intro");
-const story = document.getElementById("story");
-
-let delay = (ms) => new Promise(res => setTimeout(res, ms));
+function delay(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
 
 // typing effect
 function typeText(el, text, speed = 25) {
-  let i = 0;
-  el.innerHTML = "";
+  return new Promise(resolve => {
+    let i = 0;
+    el.innerHTML = "";
 
-  let interval = setInterval(() => {
-    el.innerHTML += text[i];
-    i++;
-    if (i >= text.length) clearInterval(interval);
-  }, speed);
+    const interval = setInterval(() => {
+      el.innerHTML += text[i];
+      i++;
+
+      if (i >= text.length) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, speed);
+  });
 }
 
-async function startStory() {
+async function runStory() {
 
-  // 🌸 intro 3 detik
-  await delay(3000);
+  for (let i = 0; i < DATA.length; i++) {
 
-  intro.style.opacity = "0";
-  await delay(800);
-  intro.style.display = "none";
+    const item = DATA[i];
 
-  story.classList.remove("hidden");
+    const card = document.createElement("div");
+    card.className = "card";
 
-  // 💖 typing per card
-  const texts = document.querySelectorAll(".text");
+    const title = document.createElement("h2");
+    title.innerText = item.title;
+    card.appendChild(title);
 
-  for (let t of texts) {
-    let content = t.getAttribute("data-text");
-    await typeText(t, content);
-    await delay(2000); // pause sebelum next
+    // image optional (SAFE)
+    if (item.img && item.img.trim() !== "") {
+      const img = document.createElement("img");
+      img.src = "/static/" + item.img;
+      card.appendChild(img);
+    }
+
+    const textEl = document.createElement("div");
+    textEl.className = "text";
+    card.appendChild(textEl);
+
+    container.appendChild(card);
+
+    // show animation
+    setTimeout(() => card.classList.add("show"), 100);
+
+    // typing only if text exists
+    if (item.text && item.text.trim() !== "") {
+      await typeText(textEl, item.text);
+    }
+
+    await delay(2000); // delay ke history berikutnya
   }
 }
 
-window.onload = startStory;
+runStory();
