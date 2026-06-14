@@ -1,11 +1,12 @@
 const container = document.getElementById("container");
+const bgm = document.getElementById("bgm");
 
 function delay(ms) {
-  return new Promise(res => setTimeout(res, ms));
+  return new Promise(r => setTimeout(r, ms));
 }
 
 // typing effect
-function typeText(el, text, speed = 25) {
+function typeText(el, text, speed = 20) {
   return new Promise(resolve => {
     let i = 0;
     el.innerHTML = "";
@@ -13,7 +14,6 @@ function typeText(el, text, speed = 25) {
     const interval = setInterval(() => {
       el.innerHTML += text[i];
       i++;
-
       if (i >= text.length) {
         clearInterval(interval);
         resolve();
@@ -22,7 +22,13 @@ function typeText(el, text, speed = 25) {
   });
 }
 
-async function runStory() {
+async function run() {
+
+  // 🎵 play music (auto start)
+  bgm.volume = 0.5;
+  bgm.play().catch(() => {
+    console.log("autoplay blocked");
+  });
 
   for (let i = 0; i < DATA.length; i++) {
 
@@ -31,33 +37,36 @@ async function runStory() {
     const card = document.createElement("div");
     card.className = "card";
 
-    const title = document.createElement("h2");
+    const title = document.createElement("h1");
     title.innerText = item.title;
     card.appendChild(title);
 
-    // image optional (SAFE)
-    if (item.img && item.img.trim() !== "") {
+    // image
+    if (item.img) {
       const img = document.createElement("img");
       img.src = "/static/" + item.img;
       card.appendChild(img);
     }
 
-    const textEl = document.createElement("div");
-    textEl.className = "text";
-    card.appendChild(textEl);
+    const text = document.createElement("div");
+    card.appendChild(text);
 
     container.appendChild(card);
 
-    // show animation
-    setTimeout(() => card.classList.add("show"), 100);
+    // activate slide
+    setTimeout(() => card.classList.add("active"), 100);
 
-    // typing only if text exists
-    if (item.text && item.text.trim() !== "") {
-      await typeText(textEl, item.text);
+    // typing
+    if (item.text) {
+      await typeText(text, item.text);
     }
 
-    await delay(2000); // delay ke history berikutnya
+    // ⏳ delay sebelum slide berikutnya
+    await delay(3500);
+
+    // remove previous card (biar kayak slide)
+    card.classList.remove("active");
   }
 }
 
-runStory();
+run();
