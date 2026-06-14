@@ -8,28 +8,11 @@
 
 <body>
 
-<!-- 🌸 INTRO FLOWER SCREEN -->
-<div id="intro" class="intro">
-  <div class="flower">🌸</div>
-  <h1>Loading Our Story...</h1>
-</div>
+<div id="container"></div>
 
-<!-- 💖 STORY CONTAINER -->
-<div id="story" class="story hidden">
-
-  {% for item in data %}
-  <div class="card">
-
-    <img src="{{ url_for('static', filename=item.img) }}">
-
-    <h2>{{ item.title }}</h2>
-
-    <p class="text" data-text="{{ item.text }}"></p>
-
-  </div>
-  {% endfor %}
-
-</div>
+<script>
+  const DATA = {{ data | tojson }};
+</script>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
