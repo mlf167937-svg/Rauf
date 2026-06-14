@@ -1,13 +1,13 @@
-const container = document.getElementById("container");
+const btn = document.getElementById("klickBtn");
+const startScreen = document.getElementById("startScreen");
 const bgm = document.getElementById("bgm");
-
-let index = 0;
-let cards = [];
+const container = document.getElementById("container");
 
 function delay(ms){
   return new Promise(r=>setTimeout(r,ms));
 }
 
+/* typing effect */
 function typeText(el,text,speed=20){
   return new Promise(resolve=>{
     let i=0;
@@ -24,75 +24,20 @@ function typeText(el,text,speed=20){
   });
 }
 
-/* 💖 SHOW SLIDE */
-async function showSlide(i){
+/* STORY DATA (contoh) */
+const DATA = [
+  { title:"History 1", img:"", text:"Ini adalah awal cerita kita..." },
+  { title:"History 2", img:"history2.jpg", text:"Kita mulai lebih dekat..." },
+  { title:"History 3", img:"history3.jpg", text:"Dan semua jadi kenangan..." }
+];
 
-  if(i<0 || i>=DATA.length) return;
+/* STORY RUN */
+async function runStory(){
 
-  index = i;
-
-  cards.forEach(c=>{
-    c.classList.remove("active");
-  });
-
-  const card = cards[i];
-  card.classList.add("active");
-
-  const textEl = card.querySelector(".text");
-  const text = card.dataset.text || "";
-
-  if(text && !card.dataset.done){
-    card.dataset.done = "true";
-    await typeText(textEl,text);
-  }
-}
-
-/* ⏩ AUTO FLOW */
-async function autoPlay(){
-
-  for(let i=0;i<DATA.length;i++){
-    await showSlide(i);
-    await delay(3500);
-  }
-}
-
-/* 🎮 NAV BUTTONS */
-function createControls(){
-
-  const ctrl = document.createElement("div");
-  ctrl.style.position="fixed";
-  ctrl.style.bottom="20px";
-  ctrl.style.left="50%";
-  ctrl.style.transform="translateX(-50%)";
-  ctrl.style.display="flex";
-  ctrl.style.gap="10px";
-  ctrl.style.zIndex="999";
-
-  ctrl.innerHTML=`
-    <button id="prev">⬅</button>
-    <button id="next">➡</button>
-    <button id="pause">⏸</button>
-  `;
-
-  document.body.appendChild(ctrl);
-
-  document.getElementById("prev").onclick=()=>showSlide(index-1);
-  document.getElementById("next").onclick=()=>showSlide(index+1);
-
-  document.getElementById("pause").onclick=()=>{
-    index = index; // stop auto feeling (simple pause lock)
-  };
-}
-
-/* 🚀 INIT */
-async function init(){
-
-  DATA.forEach((item,i)=>{
+  for(let item of DATA){
 
     const card=document.createElement("div");
-    card.className="card";
-
-    card.dataset.text = item.text || "";
+    card.style.padding="20px";
 
     const title=document.createElement("h2");
     title.innerText=item.title;
@@ -100,22 +45,33 @@ async function init(){
 
     if(item.img){
       const img=document.createElement("img");
-      img.src="/static/"+item.img;
+      img.src="static/"+item.img;
+      img.style.width="100%";
+      img.style.borderRadius="15px";
       card.appendChild(img);
     }
 
     const text=document.createElement("div");
-    text.className="text";
     card.appendChild(text);
 
     container.appendChild(card);
-    cards.push(card);
-  });
 
-  createControls();
-
-  showSlide(0);
-  autoPlay();
+    await typeText(text,item.text);
+    await delay(3000);
+  }
 }
 
-init();
+/* START BUTTON */
+btn.addEventListener("click",async()=>{
+
+  startScreen.style.display="none";
+
+  try{
+    bgm.volume=0.5;
+    await bgm.play();
+  }catch(e){
+    console.log("music blocked");
+  }
+
+  runStory();
+});
