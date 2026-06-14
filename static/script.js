@@ -1,4 +1,5 @@
 let cards = [];
+let current = 0;
 
 window.onload = function () {
 
@@ -10,40 +11,47 @@ window.onload = function () {
 
     startScreen.style.display = "none";
 
-    bgm.volume = 0.5;
-    bgm.play().catch(() => {});
+    if (bgm) {
+      bgm.volume = 0.5;
+      bgm.play().catch(() => {});
+    }
 
     createHearts();
     buildStory();
-    autoPlay();
+
+    await startStory();
   };
 };
 
-/* 💖 LOVE BACKGROUND */
-function createHearts(){
+/* =========================
+   💖 BACKGROUND LOVE
+========================= */
+function createHearts() {
 
   const bg = document.getElementById("bg");
-  const emojis = ["💖","🤍"];
+  const emojis = ["💖", "🤍"];
 
   setInterval(() => {
 
     const h = document.createElement("div");
     h.className = "heart";
-    h.innerText = emojis[Math.floor(Math.random()*2)];
+    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-    h.style.left = Math.random()*100 + "vw";
-    h.style.fontSize = (12 + Math.random()*20) + "px";
-    h.style.animationDuration = (4 + Math.random()*3) + "s";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = (12 + Math.random() * 20) + "px";
+    h.style.animationDuration = (4 + Math.random() * 3) + "s";
 
     bg.appendChild(h);
 
-    setTimeout(()=>h.remove(),7000);
+    setTimeout(() => h.remove(), 7000);
 
-  },200);
+  }, 180);
 }
 
-/* ✍️ HUMAN TYPING (AKU → AKUU STYLE FEEL) */
-function typeText(el, text, speed = 35) {
+/* =========================
+   ✍️ HUMAN TYPING (STABIL)
+========================= */
+function typeText(el, text, speed = 28) {
 
   return new Promise(resolve => {
 
@@ -55,16 +63,7 @@ function typeText(el, text, speed = 35) {
 
       if (i < text.length) {
 
-        let char = text.charAt(i);
-
-        // 💡 efek “ketik manusia” kecil
-        if (char === "," || char === ".") {
-          speed = 120;
-        } else {
-          speed = 30;
-        }
-
-        el.innerHTML += char;
+        el.innerHTML += text[i];
         i++;
 
         setTimeout(run, speed);
@@ -78,8 +77,10 @@ function typeText(el, text, speed = 35) {
   });
 }
 
-/* 🧱 BUILD STORY */
-function buildStory(){
+/* =========================
+   🧱 BUILD STORY
+========================= */
+function buildStory() {
 
   const container = document.getElementById("container");
 
@@ -88,6 +89,7 @@ function buildStory(){
     const card = document.createElement("div");
     card.className = "card";
 
+    // kalau ada image
     if (item.img) {
       const img = document.createElement("img");
       img.src = "/static/" + item.img;
@@ -106,36 +108,52 @@ function buildStory(){
   });
 }
 
-/* 🎬 SHOW */
-async function show(i){
+/* =========================
+   🎬 SHOW SLIDE
+========================= */
+async function showSlide(i) {
 
   cards.forEach(c => c.classList.remove("active"));
 
   const card = cards[i];
+  if (!card) return;
+
   card.classList.add("active");
 
   const textEl = card.querySelector(".text");
 
-  await typeText(textEl, textEl.dataset.value, 30);
+  await typeText(textEl, textEl.dataset.value, 26);
 }
 
-/* ⏱️ TIMING PRO (lebih cepat tapi masih readable) */
-function getDelay(i){
+/* =========================
+   ⏱️ SMART DELAY (FIX BORING GAP)
+========================= */
+function getDelay(text) {
 
-  if(i === 0) return 16000;
-  if(i === 1) return 18000;
-  if(i === 2) return 18000;
-  if(i === 3) return 20000;
+  // ⛔ jangan pakai 14 detik lagi
+  const base = 3500; // pause setelah typing
+  const readingTime = text.length * 25; // natural reading
 
-  return 18000; // ending
+  return Math.min(base + readingTime, 9000); 
+  // max 9 detik biar tidak kosong lama
 }
 
-async function autoPlay(){
+/* =========================
+   🚀 START STORY FLOW
+========================= */
+async function startStory() {
 
-  for(let i=0;i<cards.length;i++){
+  for (let i = 0; i < cards.length; i++) {
 
-    await show(i);
+    const textEl = cards[i].querySelector(".text");
 
-    await new Promise(r => setTimeout(r, getDelay(i)));
+    await showSlide(i);
+
+    const delay = getDelay(textEl.dataset.value || "");
+
+    await new Promise(r => setTimeout(r, delay));
   }
+
+  // optional: loop atau end state
+  console.log("story finished");
 }
