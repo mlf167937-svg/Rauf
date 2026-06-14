@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cheslea Story</title>
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="hero">
+  <h1>🌸 Cheslea Story</h1>
+  <p>sebuah perjalanan yang tidak pernah sederhana</p>
+</div>
+
+<div class="timeline">
+
+  {% for item in data %}
+  <div class="card">
+
+    <img src="{{ url_for('static', filename=item.img) }}">
+
+    <h2>{{ item.title }}</h2>
+
+    <div class="text">
+      {{ item.text }}
+    </div>
+
+  </div>
+  {% endfor %}
+
+</div>
+
+<!-- JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
