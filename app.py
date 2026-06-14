@@ -6,9 +6,9 @@ app = Flask(__name__)
 BASE = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(BASE, "static")
 
-def read_txt(name):
+def read_txt(file):
     try:
-        with open(os.path.join(STATIC, name), "r", encoding="utf-8") as f:
+        with open(os.path.join(STATIC, file), "r", encoding="utf-8") as f:
             return f.read()
     except:
         return ""
@@ -18,22 +18,18 @@ def home():
 
     data = [
         {
-            "title": "Chapter I",
             "img": "history1.jpg",
             "text": read_txt("history1.txt")
         },
         {
-            "title": "Chapter II",
             "img": "history2.jpg",
             "text": read_txt("history2.txt")
         },
         {
-            "title": "Chapter III",
             "img": "history3.jpg",
             "text": read_txt("history3.txt")
         },
         {
-            "title": "Final Chapter",
             "img": "history4.jpg",
             "text": read_txt("history4.txt")
         }
