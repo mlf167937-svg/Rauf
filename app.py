@@ -15,23 +15,30 @@ def read_txt(name):
 
 @app.route("/")
 def home():
+
     data = [
         {
-            "title": "History 1",
+            "title": "Chapter I",
             "img": "history1.jpg",
             "text": read_txt("history1.txt")
         },
         {
-            "title": "History 2",
+            "title": "Chapter II",
             "img": "history2.jpg",
             "text": read_txt("history2.txt")
         },
         {
-            "title": "History 3",
+            "title": "Chapter III",
             "img": "history3.jpg",
             "text": read_txt("history3.txt")
+        },
+        {
+            "title": "Final Chapter",
+            "img": "history4.jpg",
+            "text": read_txt("history4.txt")
         }
     ]
+
     return render_template("index.html", data=data)
 
 if __name__ == "__main__":
