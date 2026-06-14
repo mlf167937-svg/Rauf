@@ -32,7 +32,6 @@ def home():
             "text": read_txt("history3.txt")
         }
     ]
-
     return render_template("index.html", data=data)
 
 if __name__ == "__main__":
