@@ -6,12 +6,12 @@
 }
 
 body{
-  background:#070712;
+  background:#060610;
   color:white;
   overflow:hidden;
 }
 
-/* ================= START ================= */
+/* ================= INTRO ================= */
 
 #startScreen{
   position:fixed;
@@ -19,27 +19,28 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
+
   background:radial-gradient(circle,#1a1a2f,#000);
   z-index:999;
 }
 
 .box{
   width:min(90vw,420px);
-  text-align:center;
-
   padding:25px;
-  border-radius:20px;
 
   background:rgba(255,255,255,0.06);
   backdrop-filter:blur(12px);
 
+  border-radius:20px;
+
+  text-align:center;
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:10px;
 }
 
 h1{
-  font-size:clamp(22px,4vw,34px);
+  font-size:clamp(22px,5vw,34px);
   color:#ff4d6d;
 }
 
@@ -56,11 +57,6 @@ button{
   background:#ff4d6d;
   color:white;
   cursor:pointer;
-}
-
-.glow{
-  font-size:20px;
-  animation:float 2s infinite ease-in-out;
 }
 
 /* ================= STORY ================= */
@@ -88,7 +84,7 @@ button{
   border-radius:20px;
 
   opacity:0;
-  transform:translateY(30px);
+  transform:translateY(25px);
 
   transition:0.8s ease;
 
@@ -115,24 +111,33 @@ img{
   white-space:pre-line;
 }
 
-/* ================= HEART BG ================= */
+/* ================= HEART BACKGROUND ================= */
 
 #bg{
   position:fixed;
   inset:0;
   pointer-events:none;
+  overflow:hidden;
 }
 
+/* 💖 LOVE TYPES */
 .heart{
   position:absolute;
-  color:#ff4d6d;
-  animation:up 6s linear infinite;
+  font-size:16px;
+  animation:floatUp linear infinite;
+  opacity:0.8;
 }
 
-@keyframes up{
+@keyframes floatUp{
   0%{transform:translateY(100vh);opacity:0;}
-  50%{opacity:1;}
+  30%{opacity:1;}
   100%{transform:translateY(-10vh);opacity:0;}
+}
+
+/* glow intro */
+.glow{
+  font-size:20px;
+  animation:float 2s infinite ease-in-out;
 }
 
 @keyframes float{
