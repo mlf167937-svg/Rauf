@@ -15,30 +15,39 @@ window.onload = function(){
 
     createHearts();
     buildStory();
-
-    await autoPlay();
+    autoPlay();
   };
 };
 
-/* 💖 HEARTS */
+/* ================= LOVE BACKGROUND ================= */
+
 function createHearts(){
+
   const bg = document.getElementById("bg");
 
+  const emojis = ["💖","🤍"];
+
   setInterval(()=>{
+
     const h = document.createElement("div");
-    h.className="heart";
-    h.innerText="💖";
+    h.className = "heart";
+
+    h.innerText = emojis[Math.floor(Math.random()*2)];
 
     h.style.left = Math.random()*100 + "vw";
+    h.style.fontSize = (12 + Math.random()*22) + "px";
+    h.style.animationDuration = (4 + Math.random()*3) + "s";
 
     bg.appendChild(h);
 
-    setTimeout(()=>h.remove(),6000);
-  },250);
+    setTimeout(()=>h.remove(),7000);
+
+  },200);
 }
 
-/* ✍️ TYPE */
-function typeText(el,text,speed=35){
+/* ================= TYPE TEXT ================= */
+
+function typeText(el,text,speed=28){
 
   return new Promise(resolve=>{
 
@@ -59,7 +68,8 @@ function typeText(el,text,speed=35){
   });
 }
 
-/* BUILD */
+/* ================= BUILD STORY ================= */
+
 function buildStory(){
 
   const container = document.getElementById("container");
@@ -69,18 +79,13 @@ function buildStory(){
     const card = document.createElement("div");
     card.className="card";
 
-    const title = document.createElement("h2");
-    title.innerText=item.title;
-
     const img = document.createElement("img");
     img.src="/static/"+item.img;
 
     const text = document.createElement("div");
     text.className="text";
-
     text.dataset.value = item.text;
 
-    card.appendChild(title);
     card.appendChild(img);
     card.appendChild(text);
 
@@ -90,7 +95,8 @@ function buildStory(){
   });
 }
 
-/* SHOW */
+/* ================= SHOW SLIDE ================= */
+
 async function show(i){
 
   cards.forEach(c=>c.classList.remove("active"));
@@ -100,16 +106,17 @@ async function show(i){
 
   const textEl = card.querySelector(".text");
 
-  await typeText(textEl, textEl.dataset.value, 30);
+  await typeText(textEl,textEl.dataset.value,28);
 }
 
-/* ⏱️ TIMING 4 SLIDE ~ 2 MENIT */
+/* ================= TIMING PRO ================= */
+
 function getDelay(i){
 
-  if(i===0) return 30000; // 30s
-  if(i===1) return 35000; // 35s
-  if(i===2) return 35000; // 35s
-  return 40000;          // 40s
+  if(i===0) return 18000;
+  if(i===1) return 20000;
+  if(i===2) return 20000;
+  return 25000;
 }
 
 async function autoPlay(){
