@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Story</title>
+
+  <title>For You</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -12,20 +13,29 @@
 
 <!-- 🎵 MUSIC -->
 <audio id="bgm" loop>
-  <source src="{{ url_for('static', filename='music.mp3') }}" type="audio/mpeg">
+  <source src="{{ url_for('static', filename='music.mp3') }}">
 </audio>
 
-<!-- 💖 START -->
+<!-- 🌸 INTRO BOX (SIMETRIS) -->
 <div id="startScreen">
   <div class="box">
-    <div class="love">💖 ❤️ 💖 ❤️</div>
-    <h1>You Are So Pretty</h1>
-    <button id="klickBtn">Klick Aku</button>
-    <div class="love">❤️ 💖 ❤️ 💖</div>
+
+    <div class="glow">💖 ✦ 💖</div>
+
+    <h1>For You</h1>
+
+    <p>
+      A small story about feelings, memories, and someone I never forgot.
+    </p>
+
+    <button id="klickBtn">Start</button>
+
+    <div class="glow">💖 ✦ 💖</div>
+
   </div>
 </div>
 
-<!-- 🌸 EFFECT BACKGROUND -->
+<!-- BACKGROUND HEART -->
 <div id="bg"></div>
 
 <!-- STORY -->
