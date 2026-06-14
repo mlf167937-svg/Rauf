@@ -32,6 +32,10 @@ def home():
         {
             "img": "history4.jpg",
             "text": read_txt("history4.txt")
+        },
+        {
+            "img": None,
+            "text": read_txt("history5.txt")
         }
     ]
 
