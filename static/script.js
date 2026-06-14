@@ -1,5 +1,6 @@
 let index = 0;
 let cards = [];
+let typingLock = false;
 
 window.onload = function () {
 
@@ -9,8 +10,7 @@ window.onload = function () {
 
   btn.onclick = async function () {
 
-    startScreen.style.opacity = "0";
-    setTimeout(() => startScreen.style.display = "none", 600);
+    startScreen.style.display = "none";
 
     if (bgm) {
       bgm.volume = 0.5;
@@ -21,7 +21,7 @@ window.onload = function () {
   };
 };
 
-/* 🌸 HEART BACKGROUND (lebih smooth) */
+/* 💖 HEART BG */
 function createHearts(){
   const bg = document.getElementById("bg");
 
@@ -29,35 +29,41 @@ function createHearts(){
     const h = document.createElement("div");
     h.className = "heart";
     h.innerText = "💖";
-
     h.style.left = Math.random()*100 + "vw";
-    h.style.fontSize = (12 + Math.random()*18) + "px";
-    h.style.animationDuration = (4 + Math.random()*3) + "s";
-
     bg.appendChild(h);
 
-    setTimeout(() => h.remove(), 7000);
-  }, 250);
+    setTimeout(() => h.remove(), 6000);
+  }, 300);
 }
 
-/* ✍️ TEXT ANIMATION PRO */
-function typeText(el, text, speed = 35) {
+/* ✍️ SAFE TYPE (ANTI DOUBLE GLITCH) */
+function typeText(el, text, speed = 25) {
+
   return new Promise(resolve => {
 
+    if (!text) return resolve();
+
     el.innerHTML = "";
+
     let i = 0;
 
-    function typing() {
+    // 🔥 ANTI DOUBLE CALL
+    if (el.dataset.typing === "1") return resolve();
+    el.dataset.typing = "1";
+
+    function run() {
+
       if (i < text.length) {
         el.innerHTML += text.charAt(i);
         i++;
-        setTimeout(typing, speed);
+        setTimeout(run, speed);
       } else {
+        el.dataset.typing = "0";
         resolve();
       }
     }
 
-    typing();
+    run();
   });
 }
 
@@ -66,62 +72,44 @@ async function showSlide(i){
 
   if (!cards[i]) return;
 
-  cards.forEach(c => {
-    c.classList.remove("active");
-    c.style.transform = "translateX(40px)";
-  });
+  cards.forEach(c => c.classList.remove("active"));
 
   const card = cards[i];
   card.classList.add("active");
 
   const textEl = card.querySelector(".text");
+
   const text = card.dataset.text || "";
 
-  // reset text dulu
   textEl.innerHTML = "";
 
-  // typing effect
-  if (text) {
-    await typeText(textEl, text, 30);
-  }
+  await typeText(textEl, text, 28);
 
   index = i;
 }
 
-/* ⏳ AUTO FLOW PRO (CUSTOM DELAY PER SLIDE) */
+/* ⏳ AUTO */
 async function autoPlay(){
 
   for (let i = 0; i < cards.length; i++) {
 
     await showSlide(i);
 
-    // 🔥 delay lebih cinematic
-    await delay(getDelay(i));
+    await delay(i === 0 ? 5000 : 4500);
   }
 }
 
-/* 🎚️ CONTROL KECEPATAN PER SLIDE */
-function getDelay(i){
-
-  // slide pertama lebih lama
-  if (i === 0) return 5000;
-
-  // slide tengah normal
-  if (i === 1) return 4500;
-
-  // slide terakhir lebih slow romantic
-  return 6000;
-}
-
-/* ⏳ helper delay */
 function delay(ms){
   return new Promise(r => setTimeout(r, ms));
 }
 
-/* 🚀 BUILD STORY */
+/* 🚀 BUILD */
 function startStory(){
 
   createHearts();
+
+  document.getElementById("container").innerHTML = "";
+  cards = [];
 
   DATA.forEach(item => {
 
@@ -134,21 +122,13 @@ function startStory(){
 
     if (item.img) {
       const img = document.createElement("img");
-
-      // smooth image load
-      img.onload = () => {
-        img.style.opacity = "1";
-      };
-
-      img.style.opacity = "0";
-      img.style.transition = "0.6s";
-
       img.src = "/static/" + item.img;
       card.appendChild(img);
     }
 
     const text = document.createElement("div");
     text.className = "text";
+
     card.appendChild(text);
 
     card.dataset.text = item.text || "";
