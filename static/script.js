@@ -1,21 +1,41 @@
-document.addEventListener("DOMContentLoaded", () => {
+// 🌸 FLOW CONTROL CINEMATIC STORY
 
-  const cards = document.querySelectorAll(".card");
+const intro = document.getElementById("intro");
+const story = document.getElementById("story");
 
-  cards.forEach((card, i) => {
+let delay = (ms) => new Promise(res => setTimeout(res, ms));
 
-    // awal state
-    card.style.opacity = 0;
-    card.style.transform = "translateY(30px)";
+// typing effect
+function typeText(el, text, speed = 25) {
+  let i = 0;
+  el.innerHTML = "";
 
-    // animasi muncul bertahap
-    setTimeout(() => {
-      card.style.transition = "0.7s ease";
-      card.style.opacity = 1;
-      card.style.transform = "translateY(0)";
-    }, i * 250);
+  let interval = setInterval(() => {
+    el.innerHTML += text[i];
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, speed);
+}
 
-  });
+async function startStory() {
 
-  console.log("🌸 Cheslea Story Loaded");
-});
+  // 🌸 intro 3 detik
+  await delay(3000);
+
+  intro.style.opacity = "0";
+  await delay(800);
+  intro.style.display = "none";
+
+  story.classList.remove("hidden");
+
+  // 💖 typing per card
+  const texts = document.querySelectorAll(".text");
+
+  for (let t of texts) {
+    let content = t.getAttribute("data-text");
+    await typeText(t, content);
+    await delay(2000); // pause sebelum next
+  }
+}
+
+window.onload = startStory;
