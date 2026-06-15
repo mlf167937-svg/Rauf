@@ -15,7 +15,7 @@ const texts = [
 
 function spawnParticles() {
   const bg = document.getElementById("bg");
-  const emojis = ["💖","🤍","🌹","✨"];
+  const emojis = ["💖","🤍","🌹"];
 
   setInterval(() => {
     const e = document.createElement("div");
@@ -28,20 +28,24 @@ function spawnParticles() {
 
     bg.appendChild(e);
     setTimeout(() => e.remove(), 8000);
-  }, 180);
+  }, 200);
 }
 
 async function loadText(file) {
-  try {
-    const res = await fetch(`/rex1/${file}`);
-    return await res.text();
-  } catch {
-    return "text error...";
-  }
+  const res = await fetch(`/rex1/${file}`);
+  return await res.text();
 }
 
-function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function showText(el, content) {
+
+  el.classList.remove("show");
+  await sleep(200);
+
+  el.innerText = content;
+
+  el.classList.add("show"); // 🔥 ANIMASI MUNCUL
 }
 
 async function run() {
@@ -55,31 +59,29 @@ async function run() {
 
   spawnParticles();
 
+  // 🔵 SLIDE 1–4 (foto + text)
   for (let i = 0; i < photos.length; i++) {
 
-    // 🔵 image fade
     photo.style.opacity = 0;
-    await sleep(200);
+    await sleep(300);
 
     photo.src = `/rex1/${photos[i]}`;
     photo.style.opacity = 1;
 
-    // 🟣 text load
     const txt = await loadText(texts[i]);
+    await showText(text, txt);
 
-    text.classList.remove("fade");
-    text.innerText = txt;
-
-    box.classList.remove("end");
-
-    await sleep(4500);
+    await sleep(4500); // ⏱️ delay antar slide FIX
   }
 
-  // 🟣 ending center text
-  const end = await loadText("history5.txt");
+  // 🟣 FINAL TEXT ONLY (NO IMAGE)
+  photo.style.display = "none"; // 🔥 HAPUS FOTO
+
+  const endText = await loadText("history5.txt");
 
   box.classList.add("end");
-  text.innerText = end;
+
+  await showText(text, endText);
 }
 
 window.onload = run;
