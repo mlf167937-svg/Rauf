@@ -2,68 +2,34 @@ let cards = [];
 let current = 0;
 
 /* =========================
-   🎯 DATA STORY (WAJIB ADA)
-========================= */
-const DATA = [
-  { img: "history1.jpg", text: "..." },
-  { img: "history2.jpg", text: "..." },
-  { img: "history3.jpg", text: "..." },
-  { img: "history4.jpg", text: "..." }
-];
-
-window.onload = function () {
-
-  const btn = document.getElementById("klickBtn");
-  const startScreen = document.getElementById("startScreen");
-  const bgm = document.getElementById("bgm");
-
-  if (!btn) return; // safety
-
-  btn.onclick = async function () {
-
-    startScreen.style.display = "none";
-
-    if (bgm) {
-      bgm.volume = 0.5;
-      bgm.play().catch(() => {});
-    }
-
-    createHearts();
-    buildStory();
-
-    await startStory();
-  };
-};
-
-/* =========================
-   💖 BACKGROUND LOVE
+   💖 EMOJI LOVE BACKGROUND
 ========================= */
 function createHearts() {
 
   const bg = document.getElementById("bg");
   if (!bg) return;
 
-  const emojis = ["💖", "🤍"];
+  const emojis = ["💖", "🤍", "🌹"];
 
   setInterval(() => {
 
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    const el = document.createElement("div");
+    el.className = "heart";
+    el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.fontSize = (12 + Math.random() * 20) + "px";
-    h.style.animationDuration = (4 + Math.random() * 3) + "s";
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.fontSize = (14 + Math.random() * 22) + "px";
+    el.style.animationDuration = (4 + Math.random() * 4) + "s";
 
-    bg.appendChild(h);
+    bg.appendChild(el);
 
-    setTimeout(() => h.remove(), 7000);
+    setTimeout(() => el.remove(), 8000);
 
   }, 180);
 }
 
 /* =========================
-   ✍️ TYPE TEXT
+   ✍️ TYPE EFFECT
 ========================= */
 function typeText(el, text, speed = 28) {
 
@@ -73,6 +39,7 @@ function typeText(el, text, speed = 28) {
     let i = 0;
 
     function run() {
+
       if (i < text.length) {
         el.innerHTML += text[i];
         i++;
@@ -87,24 +54,26 @@ function typeText(el, text, speed = 28) {
 }
 
 /* =========================
-   🧱 BUILD STORY
+   🧱 BUILD STORY (1–5)
 ========================= */
 function buildStory() {
 
   const container = document.getElementById("container");
   if (!container) return;
 
-  DATA.forEach(item => {
+  DATA.forEach((item, index) => {
 
     const card = document.createElement("div");
     card.className = "card";
 
+    // IMAGE
     if (item.img) {
       const img = document.createElement("img");
-      img.src = "/rex1/" + item.img; // FIX PATH
+      img.src = "/rex1/" + item.img;
       card.appendChild(img);
     }
 
+    // TEXT
     const text = document.createElement("div");
     text.className = "text";
     text.dataset.value = item.text;
@@ -117,7 +86,7 @@ function buildStory() {
 }
 
 /* =========================
-   🎬 SHOW SLIDE
+   🎬 SHOW SCENE
 ========================= */
 async function showSlide(i) {
 
@@ -134,31 +103,52 @@ async function showSlide(i) {
 }
 
 /* =========================
-   ⏱️ DELAY CONTROL
+   ⏱️ DELAY FEEL REAL STORY
 ========================= */
-function getDelay(text) {
+function getDelay(text, index) {
 
-  const base = 3500;
-  const readingTime = text.length * 25;
+  // penutupan lebih lama dikit biar feel emotional
+  if (index === 4) {
+    return 6000;
+  }
 
-  return Math.min(base + readingTime, 9000);
+  const base = 3000;
+  const reading = text.length * 20;
+
+  return Math.min(base + reading, 8500);
 }
 
 /* =========================
-   🚀 START STORY
+   🚀 START STORY FLOW
 ========================= */
 async function startStory() {
 
   for (let i = 0; i < cards.length; i++) {
 
-    const textEl = cards[i].querySelector(".text");
-
     await showSlide(i);
 
-    const delay = getDelay(textEl.dataset.value || "");
+    const textEl = cards[i].querySelector(".text");
+
+    const delay = getDelay(textEl.dataset.value || "", i);
 
     await new Promise(r => setTimeout(r, delay));
   }
 
-  console.log("story finished");
+  // END SCREEN
+  const end = document.getElementById("end");
+  if (end) {
+    end.style.display = "block";
+  }
+
+  console.log("💖 story finished");
 }
+
+/* =========================
+   INIT
+========================= */
+window.onload = function () {
+
+  createHearts();
+  buildStory();
+  startStory();
+};
