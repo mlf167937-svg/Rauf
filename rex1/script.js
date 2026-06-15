@@ -1,87 +1,155 @@
-const photos = [
-  "history1.jpg",
-  "history2.jpg",
-  "history3.jpg",
-  "history4.jpg"
-];
+let cards = [];
+let current = 0;
 
-const texts = [
-  "history1.txt",
-  "history2.txt",
-  "history3.txt",
-  "history4.txt",
-  "history5.txt"
-];
+window.onload = function () {
 
-function spawnParticles() {
+  const btn = document.getElementById("klickBtn");
+  const startScreen = document.getElementById("startScreen");
+  const bgm = document.getElementById("bgm");
+
+  btn.onclick = async function () {
+
+    startScreen.style.display = "none";
+
+    // music fix
+    if (bgm) {
+      bgm.volume = 0.5;
+      bgm.play().catch(() => {});
+    }
+
+    createHearts();
+
+    await buildStory();   // 🔥 sekarang async karena fetch TXT
+    await startStory();
+  };
+};
+
+/* =========================
+   💖 HEART ANIMATION
+========================= */
+function createHearts() {
+
   const bg = document.getElementById("bg");
-  const emojis = ["💖","🤍","🌹"];
+  const emojis = ["💖", "🤍", "🌹"];
 
   setInterval(() => {
-    const e = document.createElement("div");
-    e.className = "heart";
-    e.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-    e.style.left = Math.random() * 100 + "vw";
-    e.style.fontSize = (12 + Math.random() * 18) + "px";
-    e.style.animationDuration = (4 + Math.random() * 4) + "s";
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-    bg.appendChild(e);
-    setTimeout(() => e.remove(), 8000);
-  }, 200);
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = (12 + Math.random() * 22) + "px";
+    h.style.animationDuration = (4 + Math.random() * 3) + "s";
+
+    bg.appendChild(h);
+
+    setTimeout(() => h.remove(), 7000);
+
+  }, 160);
 }
 
-async function loadText(file) {
-  const res = await fetch(`/rex1/${file}`);
+/* =========================
+   ✍️ TYPE TEXT
+========================= */
+function typeText(el, text, speed = 25) {
+
+  return new Promise(resolve => {
+
+    el.innerHTML = "";
+    let i = 0;
+
+    function run() {
+      if (i < text.length) {
+        el.innerHTML += text[i++];
+        setTimeout(run, speed);
+      } else {
+        resolve();
+      }
+    }
+
+    run();
+  });
+}
+
+/* =========================
+   📦 LOAD STORY FROM FILES
+========================= */
+async function loadText(path) {
+  const res = await fetch(path);
   return await res.text();
 }
 
-const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+async function buildStory() {
 
-async function showText(el, content) {
+  const container = document.getElementById("container");
 
-  el.classList.remove("show");
-  await sleep(200);
+  for (let i = 1; i <= 5; i++) {
 
-  el.innerText = content;
+    const text = await loadText(`/static/history${i}.txt`);
 
-  el.classList.add("show"); // 🔥 ANIMASI MUNCUL
-}
+    const card = document.createElement("div");
+    card.className = "card";
 
-async function run() {
-  const photo = document.getElementById("photo");
-  const text = document.getElementById("text");
-  const box = document.querySelector(".text-box");
-  const audio = document.getElementById("bgm");
+    // 🔥 image hanya 1–4
+    if (i <= 4) {
+      const img = document.createElement("img");
+      img.src = `/static/history${i}.jpg`;
+      card.appendChild(img);
+    }
 
-  audio.volume = 0.6;
-  audio.play().catch(()=>{});
+    const textEl = document.createElement("div");
+    textEl.className = "text";
+    textEl.dataset.value = text;
 
-  spawnParticles();
+    // 🔥 last slide (history5) tanpa gambar & center
+    if (i === 5) {
+      textEl.classList.add("final");
+    }
 
-  // 🔵 SLIDE 1–4 (foto + text)
-  for (let i = 0; i < photos.length; i++) {
+    card.appendChild(textEl);
+    container.appendChild(card);
 
-    photo.style.opacity = 0;
-    await sleep(300);
-
-    photo.src = `/rex1/${photos[i]}`;
-    photo.style.opacity = 1;
-
-    const txt = await loadText(texts[i]);
-    await showText(text, txt);
-
-    await sleep(4500); // ⏱️ delay antar slide FIX
+    cards.push(card);
   }
-
-  // 🟣 FINAL TEXT ONLY (NO IMAGE)
-  photo.style.display = "none"; // 🔥 HAPUS FOTO
-
-  const endText = await loadText("history5.txt");
-
-  box.classList.add("end");
-
-  await showText(text, endText);
 }
 
-window.onload = run;
+/* =========================
+   🎬 SLIDE SYSTEM
+========================= */
+async function showSlide(i) {
+
+  cards.forEach(c => c.classList.remove("active"));
+
+  const card = cards[i];
+  if (!card) return;
+
+  card.classList.add("active");
+
+  const textEl = card.querySelector(".text");
+  await typeText(textEl, textEl.dataset.value);
+}
+
+/* =========================
+   ⏱️ DELAY SMOOTH
+========================= */
+function getDelay(text) {
+  const base = 2500;
+  return Math.min(base + text.length * 18, 8000);
+}
+
+/* =========================
+   🚀 START STORY
+========================= */
+async function startStory() {
+
+  for (let i = 0; i < cards.length; i++) {
+
+    await showSlide(i);
+
+    const textEl = cards[i].querySelector(".text");
+    const delay = getDelay(textEl.dataset.value || "");
+
+    await new Promise(r => setTimeout(r, delay));
+  }
+}
