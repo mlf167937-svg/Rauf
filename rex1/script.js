@@ -2,47 +2,109 @@ let cards = [];
 let current = 0;
 
 /* =========================
-   💖 EMOJI LOVE BACKGROUND
+   INIT
+========================= */
+window.onload = function () {
+
+  const bgm = document.getElementById("bgm");
+
+  if (bgm) {
+    bgm.volume = 0.5;
+  }
+
+  createHearts();
+  buildStoryFromFiles();
+};
+
+/* =========================
+   💖 BACKGROUND LOVE
 ========================= */
 function createHearts() {
 
   const bg = document.getElementById("bg");
-  if (!bg) return;
-
   const emojis = ["💖", "🤍", "🌹"];
 
   setInterval(() => {
 
-    const el = document.createElement("div");
-    el.className = "heart";
-    el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-    el.style.left = Math.random() * 100 + "vw";
-    el.style.fontSize = (14 + Math.random() * 22) + "px";
-    el.style.animationDuration = (4 + Math.random() * 4) + "s";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = (14 + Math.random() * 22) + "px";
+    h.style.animationDuration = (4 + Math.random() * 4) + "s";
 
-    bg.appendChild(el);
+    bg.appendChild(h);
 
-    setTimeout(() => el.remove(), 8000);
+    setTimeout(() => h.remove(), 8000);
 
-  }, 180);
+  }, 160);
+}
+
+/* =========================
+   📥 LOAD TXT FILE
+========================= */
+async function loadText(file) {
+  const res = await fetch("/rex1/" + file);
+  return await res.text();
+}
+
+/* =========================
+   🧱 BUILD STORY FROM FILES
+========================= */
+async function buildStoryFromFiles() {
+
+  const container = document.getElementById("container");
+
+  const data = [
+    "history1",
+    "history2",
+    "history3",
+    "history4",
+    "history5"
+  ];
+
+  for (let i = 0; i < data.length; i++) {
+
+    const base = data[i];
+
+    const text = await loadText(base + ".txt");
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const img = document.createElement("img");
+    img.src = "/rex1/" + base + ".jpg";
+
+    const textEl = document.createElement("div");
+    textEl.className = "text";
+    textEl.dataset.value = text;
+
+    card.appendChild(img);
+    card.appendChild(textEl);
+
+    container.appendChild(card);
+
+    cards.push(card);
+  }
+
+  startStory();
 }
 
 /* =========================
    ✍️ TYPE EFFECT
 ========================= */
-function typeText(el, text, speed = 28) {
+function typeText(el, text, speed = 25) {
 
   return new Promise(resolve => {
 
     el.innerHTML = "";
+
     let i = 0;
 
     function run() {
-
       if (i < text.length) {
-        el.innerHTML += text[i];
-        i++;
+        el.innerHTML += text[i++];
         setTimeout(run, speed);
       } else {
         resolve();
@@ -54,39 +116,7 @@ function typeText(el, text, speed = 28) {
 }
 
 /* =========================
-   🧱 BUILD STORY (1–5)
-========================= */
-function buildStory() {
-
-  const container = document.getElementById("container");
-  if (!container) return;
-
-  DATA.forEach((item, index) => {
-
-    const card = document.createElement("div");
-    card.className = "card";
-
-    // IMAGE
-    if (item.img) {
-      const img = document.createElement("img");
-      img.src = "/rex1/" + item.img;
-      card.appendChild(img);
-    }
-
-    // TEXT
-    const text = document.createElement("div");
-    text.className = "text";
-    text.dataset.value = item.text;
-
-    card.appendChild(text);
-    container.appendChild(card);
-
-    cards.push(card);
-  });
-}
-
-/* =========================
-   🎬 SHOW SCENE
+   🎬 SHOW SLIDE
 ========================= */
 async function showSlide(i) {
 
@@ -99,27 +129,11 @@ async function showSlide(i) {
 
   const textEl = card.querySelector(".text");
 
-  await typeText(textEl, textEl.dataset.value, 26);
+  await typeText(textEl, textEl.dataset.value);
 }
 
 /* =========================
-   ⏱️ DELAY FEEL REAL STORY
-========================= */
-function getDelay(text, index) {
-
-  // penutupan lebih lama dikit biar feel emotional
-  if (index === 4) {
-    return 6000;
-  }
-
-  const base = 3000;
-  const reading = text.length * 20;
-
-  return Math.min(base + reading, 8500);
-}
-
-/* =========================
-   🚀 START STORY FLOW
+   🚀 STORY FLOW
 ========================= */
 async function startStory() {
 
@@ -127,28 +141,8 @@ async function startStory() {
 
     await showSlide(i);
 
-    const textEl = cards[i].querySelector(".text");
-
-    const delay = getDelay(textEl.dataset.value || "", i);
-
-    await new Promise(r => setTimeout(r, delay));
+    await new Promise(r => setTimeout(r, 4000));
   }
 
-  // END SCREEN
-  const end = document.getElementById("end");
-  if (end) {
-    end.style.display = "block";
-  }
-
-  console.log("💖 story finished");
+  console.log("FINISH 💖");
 }
-
-/* =========================
-   INIT
-========================= */
-window.onload = function () {
-
-  createHearts();
-  buildStory();
-  startStory();
-};
