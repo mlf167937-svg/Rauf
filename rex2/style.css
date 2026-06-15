@@ -1,1 +1,17 @@
+body{
+    background:linear-gradient(45deg,#ff4d6d,#4d79ff);
+    color:white;
+    text-align:center;
+    font-family:sans-serif;
+}
 
+.gallery img{
+    width:180px;
+    margin:10px;
+    border-radius:15px;
+    transition:0.3s;
+}
+
+.gallery img:hover{
+    transform:scale(1.1);
+}
