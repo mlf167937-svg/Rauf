@@ -1,92 +1,38 @@
-body {
-  margin: 0;
-  background: radial-gradient(circle at top, #0a0f1f, #000);
-  font-family: Arial;
-  overflow: hidden;
-  color: white;
-}
-
-/* particles */
-#bg {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.heart {
+.card {
   position: absolute;
-  animation: float linear forwards;
-}
-
-@keyframes float {
-  from { transform: translateY(100vh); }
-  to { transform: translateY(-10vh); }
-}
-
-/* 🔵 FOTO = sedikit ke atas (FIXED) */
-.photo-box {
-  width: 100%;
-  height: 45vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  margin-top: 0px; /* FIX: gak terlalu atas */
-  transform: translateY(8px); /* 🔥 slight downward fix */
-}
-
-.photo-box img {
-  width: 92%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 16px;
-  border: 1px solid rgba(0,255,255,0.2);
-  box-shadow: 0 0 20px rgba(0,255,255,0.15);
-
-  transition: opacity 0.5s ease;
-}
-
-/* 🟣 TEXT AREA */
-.text-box {
-  width: 100%;
-  height: 45vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.text-box div {
   width: 90%;
-  padding: 18px;
-
-  border-radius: 14px;
-  background: rgba(10, 20, 40, 0.6);
-  border: 1px solid rgba(0,255,255,0.25);
-
-  box-shadow: 0 0 20px rgba(0,255,255,0.15);
-
-  font-size: 15px;
-  line-height: 1.5;
-
+  max-width: 500px;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
   opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.6s ease;
+  transition: 0.6s ease;
 }
 
-/* ANIMASI MASUK TEXT */
-.text-box div.show {
+.card.active {
   opacity: 1;
-  transform: translateY(0);
 }
 
-/* 🟣 ENDING FULL CENTER (NO IMAGE MODE) */
-.text-box.end {
-  height: 100vh;
-  align-items: center;
+.card img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 10px;
 }
 
-.text-box.end div {
+/* text box */
+.text {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+  color: white;
+  backdrop-filter: blur(6px);
   text-align: center;
+  font-size: 16px;
+}
+
+/* final slide */
+.text.final {
+  margin-top: 0;
   font-size: 18px;
+  text-align: center;
 }
