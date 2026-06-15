@@ -1,146 +1,76 @@
-let cards = [];
-let lyrics = [];
+const photos = [
+  "history1.jpg",
+  "history2.jpg",
+  "history3.jpg",
+  "history4.jpg"
+];
 
-window.onload = function () {
+const texts = [
+  "history1.txt",
+  "history2.txt",
+  "history3.txt",
+  "history4.txt",
+  "history5.txt"
+];
 
-  const btn = document.getElementById("klickBtn");
-  const bgm = document.getElementById("bgm");
+let i = 0;
 
-  btn.onclick = async function () {
-
-    document.getElementById("startScreen").style.display = "none";
-
-    createHearts();
-
-    await loadLyrics();
-
-    buildStory();
-
-    // audio fix autoplay
-    document.body.addEventListener("click", () => {
-      bgm.volume = 0.5;
-      bgm.play().catch(()=>{});
-    }, { once:true });
-
-    startStory();
-    syncLyrics();
-  };
-};
-
-/* 💖 LOVE */
-function createHearts() {
+/* 💖 hearts background */
+function spawnHearts() {
   const bg = document.getElementById("bg");
-  const emo = ["💖","🤍","🌹"];
+  const emojis = ["💖", "🤍", "🌹"];
 
   setInterval(() => {
     const h = document.createElement("div");
     h.className = "heart";
-    h.innerText = emo[Math.random()*emo.length|0];
+    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-    h.style.left = Math.random()*100 + "vw";
-    h.style.fontSize = (14+Math.random()*25)+"px";
-    h.style.animationDuration = (4+Math.random()*3)+"s";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = (12 + Math.random() * 20) + "px";
+    h.style.animationDuration = (4 + Math.random() * 4) + "s";
 
     bg.appendChild(h);
-    setTimeout(()=>h.remove(),8000);
-  },150);
+    setTimeout(() => h.remove(), 8000);
+  }, 200);
 }
 
-/* 📥 LOAD TXT */
-async function loadText(file){
-  return await fetch("/rex1/"+file).then(r=>r.text());
-}
-
-/* 📥 LOAD LYRICS */
-async function loadLyrics(){
-  lyrics = await fetch("/rex1/lyrics.json").then(r=>r.json());
-  renderLyrics();
-}
-
-/* 🎤 RENDER LYRIC */
-function renderLyrics(){
-  const box = document.getElementById("lyricsBox");
-  box.innerHTML = lyrics.map((l,i)=>
-    `<span id="lyr${i}">${l.text}</span>`
-  ).join(" ");
-}
-
-/* 🧱 STORY */
-async function buildStory(){
-
-  const container = document.getElementById("container");
-
-  for(let i=1;i<=5;i++){
-
-    const text = await loadText(`history${i}.txt`);
-
-    const card = document.createElement("div");
-    card.className = "card";
-
-    const img = document.createElement("img");
-    img.src = "/rex1/history"+i+".jpg";
-
-    const t = document.createElement("div");
-    t.className = "text";
-    t.dataset.value = text;
-
-    card.appendChild(img);
-    card.appendChild(t);
-
-    container.appendChild(card);
-    cards.push(card);
+/* 📖 load txt file */
+async function loadText(file) {
+  try {
+    const res = await fetch(`/rex1/${file}`);
+    return await res.text();
+  } catch {
+    return "text tidak ditemukan...";
   }
 }
 
-/* ✍️ TYPE */
-function type(el,text,speed=20){
-  return new Promise(res=>{
-    el.innerHTML="";
-    let i=0;
-    let x=setInterval(()=>{
-      el.innerHTML+=text[i++];
-      if(i>=text.length){
-        clearInterval(x);
-        res();
-      }
-    },speed);
-  });
-}
-
-/* 🎬 STORY */
-async function startStory(){
-
-  for(let i=0;i<cards.length;i++){
-
-    cards.forEach(c=>c.classList.remove("active"));
-    cards[i].classList.add("active");
-
-    const el = cards[i].querySelector(".text");
-
-    await type(el,el.dataset.value);
-
-    await new Promise(r=>setTimeout(r,3500));
-  }
-}
-
-/* 🎧 LYRIC SYNC */
-function syncLyrics(){
-
+/* 🚀 main story */
+async function run() {
+  const photoEl = document.getElementById("photo");
+  const textEl = document.getElementById("text");
   const audio = document.getElementById("bgm");
 
-  audio.ontimeupdate = () => {
+  audio.volume = 0.6;
 
-    let t = audio.currentTime;
+  audio.play().catch(() => {});
 
-    lyrics.forEach((l,i)=>{
+  spawnHearts();
 
-      const el = document.getElementById("lyr"+i);
+  for (let i = 0; i < photos.length; i++) {
 
-      if(t >= l.time){
-        el.classList.add("active");
-      } else {
-        el.classList.remove("active");
-      }
-    });
-  };
+    // 🔵 foto
+    photoEl.src = `/rex1/${photos[i]}`;
+
+    // 🟣 text dari file
+    const txt = await loadText(texts[i]);
+    textEl.innerText = txt;
+
+    await new Promise(r => setTimeout(r, 5000));
+  }
+
+  // 🟣 ending text
+  const endTxt = await loadText("history5.txt");
+  textEl.innerText = endTxt;
 }
+
+window.onload = run;
