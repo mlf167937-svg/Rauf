@@ -1,148 +1,146 @@
 let cards = [];
-let current = 0;
+let lyrics = [];
 
-/* =========================
-   INIT
-========================= */
 window.onload = function () {
 
+  const btn = document.getElementById("klickBtn");
   const bgm = document.getElementById("bgm");
 
-  if (bgm) {
-    bgm.volume = 0.5;
-  }
+  btn.onclick = async function () {
 
-  createHearts();
-  buildStoryFromFiles();
+    document.getElementById("startScreen").style.display = "none";
+
+    createHearts();
+
+    await loadLyrics();
+
+    buildStory();
+
+    // audio fix autoplay
+    document.body.addEventListener("click", () => {
+      bgm.volume = 0.5;
+      bgm.play().catch(()=>{});
+    }, { once:true });
+
+    startStory();
+    syncLyrics();
+  };
 };
 
-/* =========================
-   💖 BACKGROUND LOVE
-========================= */
+/* 💖 LOVE */
 function createHearts() {
-
   const bg = document.getElementById("bg");
-  const emojis = ["💖", "🤍", "🌹"];
+  const emo = ["💖","🤍","🌹"];
 
   setInterval(() => {
-
     const h = document.createElement("div");
     h.className = "heart";
-    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    h.innerText = emo[Math.random()*emo.length|0];
 
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.fontSize = (14 + Math.random() * 22) + "px";
-    h.style.animationDuration = (4 + Math.random() * 4) + "s";
+    h.style.left = Math.random()*100 + "vw";
+    h.style.fontSize = (14+Math.random()*25)+"px";
+    h.style.animationDuration = (4+Math.random()*3)+"s";
 
     bg.appendChild(h);
-
-    setTimeout(() => h.remove(), 8000);
-
-  }, 160);
+    setTimeout(()=>h.remove(),8000);
+  },150);
 }
 
-/* =========================
-   📥 LOAD TXT FILE
-========================= */
-async function loadText(file) {
-  const res = await fetch("/rex1/" + file);
-  return await res.text();
+/* 📥 LOAD TXT */
+async function loadText(file){
+  return await fetch("/rex1/"+file).then(r=>r.text());
 }
 
-/* =========================
-   🧱 BUILD STORY FROM FILES
-========================= */
-async function buildStoryFromFiles() {
+/* 📥 LOAD LYRICS */
+async function loadLyrics(){
+  lyrics = await fetch("/rex1/lyrics.json").then(r=>r.json());
+  renderLyrics();
+}
+
+/* 🎤 RENDER LYRIC */
+function renderLyrics(){
+  const box = document.getElementById("lyricsBox");
+  box.innerHTML = lyrics.map((l,i)=>
+    `<span id="lyr${i}">${l.text}</span>`
+  ).join(" ");
+}
+
+/* 🧱 STORY */
+async function buildStory(){
 
   const container = document.getElementById("container");
 
-  const data = [
-    "history1",
-    "history2",
-    "history3",
-    "history4",
-    "history5"
-  ];
+  for(let i=1;i<=5;i++){
 
-  for (let i = 0; i < data.length; i++) {
-
-    const base = data[i];
-
-    const text = await loadText(base + ".txt");
+    const text = await loadText(`history${i}.txt`);
 
     const card = document.createElement("div");
     card.className = "card";
 
     const img = document.createElement("img");
-    img.src = "/rex1/" + base + ".jpg";
+    img.src = "/rex1/history"+i+".jpg";
 
-    const textEl = document.createElement("div");
-    textEl.className = "text";
-    textEl.dataset.value = text;
+    const t = document.createElement("div");
+    t.className = "text";
+    t.dataset.value = text;
 
     card.appendChild(img);
-    card.appendChild(textEl);
+    card.appendChild(t);
 
     container.appendChild(card);
-
     cards.push(card);
   }
-
-  startStory();
 }
 
-/* =========================
-   ✍️ TYPE EFFECT
-========================= */
-function typeText(el, text, speed = 25) {
-
-  return new Promise(resolve => {
-
-    el.innerHTML = "";
-
-    let i = 0;
-
-    function run() {
-      if (i < text.length) {
-        el.innerHTML += text[i++];
-        setTimeout(run, speed);
-      } else {
-        resolve();
+/* ✍️ TYPE */
+function type(el,text,speed=20){
+  return new Promise(res=>{
+    el.innerHTML="";
+    let i=0;
+    let x=setInterval(()=>{
+      el.innerHTML+=text[i++];
+      if(i>=text.length){
+        clearInterval(x);
+        res();
       }
-    }
-
-    run();
+    },speed);
   });
 }
 
-/* =========================
-   🎬 SHOW SLIDE
-========================= */
-async function showSlide(i) {
+/* 🎬 STORY */
+async function startStory(){
 
-  cards.forEach(c => c.classList.remove("active"));
+  for(let i=0;i<cards.length;i++){
 
-  const card = cards[i];
-  if (!card) return;
+    cards.forEach(c=>c.classList.remove("active"));
+    cards[i].classList.add("active");
 
-  card.classList.add("active");
+    const el = cards[i].querySelector(".text");
 
-  const textEl = card.querySelector(".text");
+    await type(el,el.dataset.value);
 
-  await typeText(textEl, textEl.dataset.value);
+    await new Promise(r=>setTimeout(r,3500));
+  }
 }
 
-/* =========================
-   🚀 STORY FLOW
-========================= */
-async function startStory() {
+/* 🎧 LYRIC SYNC */
+function syncLyrics(){
 
-  for (let i = 0; i < cards.length; i++) {
+  const audio = document.getElementById("bgm");
 
-    await showSlide(i);
+  audio.ontimeupdate = () => {
 
-    await new Promise(r => setTimeout(r, 4000));
-  }
+    let t = audio.currentTime;
 
-  console.log("FINISH 💖");
+    lyrics.forEach((l,i)=>{
+
+      const el = document.getElementById("lyr"+i);
+
+      if(t >= l.time){
+        el.classList.add("active");
+      } else {
+        el.classList.remove("active");
+      }
+    });
+  };
 }
