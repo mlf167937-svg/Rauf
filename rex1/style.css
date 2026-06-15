@@ -1,68 +1,82 @@
 body {
   margin: 0;
-  background: #0b0b0f;
+  background: radial-gradient(circle at top, #0a0f1f, #000);
   font-family: Arial, sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
+  color: white;
 }
 
-/* 💖 floating hearts */
+/* 🌌 particles */
 #bg {
   position: fixed;
   width: 100%;
   height: 100%;
-  pointer-events: none;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .heart {
   position: absolute;
   animation: float linear forwards;
+  opacity: 0.8;
 }
 
 @keyframes float {
-  from { transform: translateY(100vh); opacity: 1; }
-  to { transform: translateY(-10vh); opacity: 0; }
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-10vh); }
 }
 
-/* 🟢 TOP COVER */
-.top-cover {
+/* 🔵 IMAGE (naik ke atas karena cover dihapus) */
+.photo-box {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  padding-top: 10px;
-}
-
-.top-cover img {
-  width: 140px;
-  height: 140px;
-  border-radius: 20px;
-  object-fit: cover;
-  box-shadow: 0 0 20px rgba(255,255,255,0.2);
-}
-
-/* 🔵 PHOTO AREA */
-.photo-area {
-  width: 100%;
-  height: 45vh;
+  height: 48vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 10px;
 }
 
-.photo-area img {
-  width: 90%;
+.photo-box img {
+  width: 92%;
   height: 100%;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,255,255,0.2);
+  box-shadow: 0 0 25px rgba(0,255,255,0.15);
 }
 
-/* 🟣 TEXT AREA */
-.text-area {
+/* 🟣 TEXT CYBERPUNK CARD */
+.text-box {
   width: 100%;
-  height: 35vh;
-  padding: 15px;
-  color: white;
-  font-size: 15px;
+  height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.text-box div {
+  width: 90%;
+  max-height: 100%;
   overflow-y: auto;
-  line-height: 1.4;
+
+  padding: 18px;
+  border-radius: 14px;
+
+  background: rgba(10, 20, 40, 0.6);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+
+  font-size: 15px;
+  line-height: 1.5;
+
+  backdrop-filter: blur(10px);
+}
+
+/* 🟣 ENDING TEXT CENTER */
+.text-box.end {
+  align-items: center;
+  text-align: center;
+  font-size: 18px;
 }
