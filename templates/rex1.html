@@ -1,30 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>REX1</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rex1 Story</title>
   <link rel="stylesheet" href="/rex1/style.css">
 </head>
 
 <body>
 
+<!-- 💖 background -->
 <div id="bg"></div>
 
-<!-- START SCREEN -->
-<div id="startScreen">
-  <button id="klickBtn">Start</button>
+<!-- 🟢 TOP (spotify cover) -->
+<div class="top-cover">
+  <img src="/rex1/sempurna.jpg" id="coverImg" />
 </div>
 
-<!-- STORY -->
-<div id="container"></div>
+<!-- 🔵 PHOTO AREA -->
+<div class="photo-area">
+  <img id="photo" />
+</div>
 
-<!-- LYRIC -->
-<div id="lyricsBox"></div>
+<!-- 🟣 TEXT AREA -->
+<div class="text-area">
+  <div id="text"></div>
+</div>
 
+<!-- 🎵 AUDIO -->
 <audio id="bgm" src="/rex1/sempurna.mp3"></audio>
 
 <script src="/rex1/script.js"></script>
-
 </body>
 </html>
