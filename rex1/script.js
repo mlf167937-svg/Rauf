@@ -13,64 +13,73 @@ const texts = [
   "history5.txt"
 ];
 
-let i = 0;
-
-/* 💖 hearts background */
-function spawnHearts() {
+function spawnParticles() {
   const bg = document.getElementById("bg");
-  const emojis = ["💖", "🤍", "🌹"];
+  const emojis = ["💖","🤍","🌹","✨"];
 
   setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    const e = document.createElement("div");
+    e.className = "heart";
+    e.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.fontSize = (12 + Math.random() * 20) + "px";
-    h.style.animationDuration = (4 + Math.random() * 4) + "s";
+    e.style.left = Math.random() * 100 + "vw";
+    e.style.fontSize = (12 + Math.random() * 18) + "px";
+    e.style.animationDuration = (4 + Math.random() * 4) + "s";
 
-    bg.appendChild(h);
-    setTimeout(() => h.remove(), 8000);
-  }, 200);
+    bg.appendChild(e);
+    setTimeout(() => e.remove(), 8000);
+  }, 180);
 }
 
-/* 📖 load txt file */
 async function loadText(file) {
   try {
     const res = await fetch(`/rex1/${file}`);
     return await res.text();
   } catch {
-    return "text tidak ditemukan...";
+    return "text error...";
   }
 }
 
-/* 🚀 main story */
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
 async function run() {
-  const photoEl = document.getElementById("photo");
-  const textEl = document.getElementById("text");
+  const photo = document.getElementById("photo");
+  const text = document.getElementById("text");
+  const box = document.querySelector(".text-box");
   const audio = document.getElementById("bgm");
 
   audio.volume = 0.6;
+  audio.play().catch(()=>{});
 
-  audio.play().catch(() => {});
-
-  spawnHearts();
+  spawnParticles();
 
   for (let i = 0; i < photos.length; i++) {
 
-    // 🔵 foto
-    photoEl.src = `/rex1/${photos[i]}`;
+    // 🔵 image fade
+    photo.style.opacity = 0;
+    await sleep(200);
 
-    // 🟣 text dari file
+    photo.src = `/rex1/${photos[i]}`;
+    photo.style.opacity = 1;
+
+    // 🟣 text load
     const txt = await loadText(texts[i]);
-    textEl.innerText = txt;
 
-    await new Promise(r => setTimeout(r, 5000));
+    text.classList.remove("fade");
+    text.innerText = txt;
+
+    box.classList.remove("end");
+
+    await sleep(4500);
   }
 
-  // 🟣 ending text
-  const endTxt = await loadText("history5.txt");
-  textEl.innerText = endTxt;
+  // 🟣 ending center text
+  const end = await loadText("history5.txt");
+
+  box.classList.add("end");
+  text.innerText = end;
 }
 
 window.onload = run;
