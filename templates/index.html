@@ -1,48 +1,60 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RexCraft Romance</title>
+    <style>
+        body{
+            margin:0;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+            background:#0f0f1a;
+            color:white;
+            font-family:sans-serif;
+        }
 
-  <title>For My Queen</title>
+        h1{
+            margin-bottom:30px;
+        }
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        .btn{
+            padding:15px 25px;
+            margin:10px;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:16px;
+            transition:0.3s;
+        }
+
+        .rex1{
+            background:#ff4d6d;
+            color:white;
+        }
+
+        .rex2{
+            background:#4d79ff;
+            color:white;
+        }
+
+        .btn:hover{
+            transform:scale(1.1);
+        }
+    </style>
 </head>
-
 <body>
 
-<audio id="bgm" loop>
-  <source src="{{ url_for('static', filename='music.mp3') }}">
-</audio>
+    <h1>test 2 js</h1>
 
-<!-- START -->
-<div id="startScreen">
-  <div class="box">
+    <a href="/rex1">
+        <button class="btn rex1">bagian 1</button>
+    </a>
 
-    <div class="glow">💖 🤍 💖</div>
-
-    <h1> For My Queen🤍 </h1>
-
-    <p> this is not just about love… it’s about staying loyal to one feeling, one name, one person </p>
-
-    <button id="klickBtn">Klick Aku</button>
-
-    <div class="glow">🤍 💖 🤍</div>
-
-  </div>
-</div>
-
-<!-- BG -->
-<div id="bg"></div>
-
-<!-- STORY -->
-<div id="container"></div>
-
-<script>
-  const DATA = {{ data | tojson }};
-</script>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+    <a href="/rex2">
+        <button class="btn rex2">bagian 2</button>
+    </a>
 
 </body>
 </html>
