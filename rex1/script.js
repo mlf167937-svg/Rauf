@@ -1,54 +1,164 @@
-const images = [
-  "/rex1/history1.jpg",
-  "/rex1/history2.jpg",
-  "/rex1/history3.jpg",
-  "/rex1/history4.jpg"
+let cards = [];
+let current = 0;
+
+/* =========================
+   🎯 DATA STORY (WAJIB ADA)
+========================= */
+const DATA = [
+  { img: "history1.jpg", text: "..." },
+  { img: "history2.jpg", text: "..." },
+  { img: "history3.jpg", text: "..." },
+  { img: "history4.jpg", text: "..." }
 ];
 
-const container = document.createElement("div");
-container.style.textAlign = "center";
-document.body.appendChild(container);
+window.onload = function () {
 
-let index = 0;
+  const btn = document.getElementById("klickBtn");
+  const startScreen = document.getElementById("startScreen");
+  const bgm = document.getElementById("bgm");
 
-// image element
-const img = document.createElement("img");
-img.style.width = "250px";
-img.style.borderRadius = "15px";
-img.style.transition = "0.5s";
-container.appendChild(img);
+  if (!btn) return; // safety
 
-// text element
-const text = document.createElement("p");
-text.style.color = "white";
-text.style.marginTop = "10px";
-container.appendChild(text);
+  btn.onclick = async function () {
 
-// music sync
-const audio = new Audio("/rex1/sempurna.mp3");
-audio.loop = true;
+    startScreen.style.display = "none";
 
-// start
-audio.play().catch(() => {
-  console.log("User must interact first");
-});
+    if (bgm) {
+      bgm.volume = 0.5;
+      bgm.play().catch(() => {});
+    }
 
-function showNext() {
-  if (index < images.length) {
-    img.style.opacity = 0;
+    createHearts();
+    buildStory();
 
-    setTimeout(() => {
-      img.src = images[index];
-      text.innerText = "story " + (index + 1);
+    await startStory();
+  };
+};
 
-      img.style.opacity = 1;
-      index++;
-    }, 500);
+/* =========================
+   💖 BACKGROUND LOVE
+========================= */
+function createHearts() {
 
-    setTimeout(showNext, 3000); // delay antar foto (3 detik)
-  } else {
-    text.innerText = "the end.";
-  }
+  const bg = document.getElementById("bg");
+  if (!bg) return;
+
+  const emojis = ["💖", "🤍"];
+
+  setInterval(() => {
+
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = (12 + Math.random() * 20) + "px";
+    h.style.animationDuration = (4 + Math.random() * 3) + "s";
+
+    bg.appendChild(h);
+
+    setTimeout(() => h.remove(), 7000);
+
+  }, 180);
 }
 
-showNext();
+/* =========================
+   ✍️ TYPE TEXT
+========================= */
+function typeText(el, text, speed = 28) {
+
+  return new Promise(resolve => {
+
+    el.innerHTML = "";
+    let i = 0;
+
+    function run() {
+      if (i < text.length) {
+        el.innerHTML += text[i];
+        i++;
+        setTimeout(run, speed);
+      } else {
+        resolve();
+      }
+    }
+
+    run();
+  });
+}
+
+/* =========================
+   🧱 BUILD STORY
+========================= */
+function buildStory() {
+
+  const container = document.getElementById("container");
+  if (!container) return;
+
+  DATA.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    if (item.img) {
+      const img = document.createElement("img");
+      img.src = "/rex1/" + item.img; // FIX PATH
+      card.appendChild(img);
+    }
+
+    const text = document.createElement("div");
+    text.className = "text";
+    text.dataset.value = item.text;
+
+    card.appendChild(text);
+    container.appendChild(card);
+
+    cards.push(card);
+  });
+}
+
+/* =========================
+   🎬 SHOW SLIDE
+========================= */
+async function showSlide(i) {
+
+  cards.forEach(c => c.classList.remove("active"));
+
+  const card = cards[i];
+  if (!card) return;
+
+  card.classList.add("active");
+
+  const textEl = card.querySelector(".text");
+
+  await typeText(textEl, textEl.dataset.value, 26);
+}
+
+/* =========================
+   ⏱️ DELAY CONTROL
+========================= */
+function getDelay(text) {
+
+  const base = 3500;
+  const readingTime = text.length * 25;
+
+  return Math.min(base + readingTime, 9000);
+}
+
+/* =========================
+   🚀 START STORY
+========================= */
+async function startStory() {
+
+  for (let i = 0; i < cards.length; i++) {
+
+    const textEl = cards[i].querySelector(".text");
+
+    await showSlide(i);
+
+    const delay = getDelay(textEl.dataset.value || "");
+
+    await new Promise(r => setTimeout(r, delay));
+  }
+
+  console.log("story finished");
+}
