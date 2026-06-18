@@ -7,21 +7,25 @@ window.onload = function () {
   const startScreen = document.getElementById("startScreen");
   const bgm = document.getElementById("bgm");
 
-  btn.onclick = async function () {
+  function start() {
+    if (startScreen) startScreen.style.display = "none";
 
-    startScreen.style.display = "none";
-
-    // music fix
     if (bgm) {
       bgm.volume = 0.5;
       bgm.play().catch(() => {});
     }
 
     createHearts();
+    buildStory();
+    startStory();
+  }
 
-    await buildStory();   // 🔥 sekarang async karena fetch TXT
-    await startStory();
-  };
+  // auto jalan kalau tombol gak ada
+  if (btn) {
+    btn.onclick = start;
+  } else {
+    start(); // 🔥 fallback penting
+  }
 };
 
 /* =========================
